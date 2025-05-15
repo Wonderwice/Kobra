@@ -40,7 +40,7 @@ namespace cobra
          * @param cam Camera object.
          * @param _scene Scene object.
          */
-        raytracer(const size_t nb_samples, const size_t depth, const camera cam, const scene _scene);
+        raytracer(const size_t nb_samples, const size_t depth, const camera& cam, const scene& _scene);
 
         /**
          * @brief Destructor.
@@ -60,6 +60,6 @@ namespace cobra
          * @param depth Current recursion depth.
          * @return Computed color as vec3.
          */
-        vec3 trace_ray(const ray r, const scene scene, const size_t depth);
+        vec3 trace_ray(const ray& r, const scene& scene, const size_t depth);
     };
 } // namespace cobra

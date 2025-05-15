@@ -4,7 +4,7 @@ namespace cobra
 {
     size_t image::index(const size_t row, const size_t col) const
     {
-        return col * height + row;
+        return row * width + col;
     }
 
     image::image(const size_t width, const size_t height) : img_buffer(width * height), width(width), height(height)
@@ -25,13 +25,13 @@ namespace cobra
         return height;
     }
 
-    void image::set_pixel(const size_t row, const size_t col, const vec3& color)
+    void image::set_pixel(const size_t row, const size_t col, const vec3 &color)
     {
-        img_buffer[index(row,col)] = color;
+        img_buffer[index(row, col)] = color;
     }
-    
+
     vec3 cobra::image::get_pixel(const size_t row, const size_t col) const
     {
-        return img_buffer[index(row,col)];
+        return img_buffer[index(row, col)];
     }
 }

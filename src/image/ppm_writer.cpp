@@ -20,7 +20,7 @@ namespace cobra
 
             for (size_t x = 0; x < width; ++x)
             {
-                vec3 color = img.get_pixel(x, y);
+                vec3 color = img.get_pixel(y,x);
                 int r = std::min(255, std::max(0, static_cast<int>(color.x() * 255.0)));
                 int g = std::min(255, std::max(0, static_cast<int>(color.y() * 255.0)));
                 int b = std::min(255, std::max(0, static_cast<int>(color.z() * 255.0)));

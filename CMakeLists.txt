@@ -24,6 +24,8 @@ set(SOURCES
     src/scene/scene.cpp
     src/image/ppm_writer.cpp
     src/image/image_writer.cpp
+    src/geometry/hittable.cpp
+    src/geometry/sphere.cpp
 )
 
 # Ajouter l'exécutable

@@ -4,14 +4,20 @@
 #include "renderer/raytracer.h"
 #include "scene/scene.h"
 #include "image/ppm_writer.h"
+#include "geometry/sphere.h"
 
 using namespace cobra;
 
 int main(){
-    const size_t image_width = 1920;
+    const size_t image_width = 1280;
     const double aspect_ratio = 16./9.;
 
-    raytracer ray_tracer(1, 1, camera(image_width,aspect_ratio,2,1), scene());
+    sphere* _sphere = new sphere(vec3(0, 0, -1), 0.5, vec3(1, 0, 0));
+    
+    scene _scene = scene();
+    _scene.add_hittable(_sphere);
+
+    raytracer ray_tracer(10, 1, camera(image_width,aspect_ratio,2,1),_scene);
 
     const image img = ray_tracer.render_image();
     ppm_writer img_writer;
