@@ -5,6 +5,7 @@
 #include "scene/scene.h"
 #include "image/ppm_writer.h"
 #include "geometry/sphere.h"
+#include <memory>
 
 using namespace cobra;
 
@@ -12,7 +13,7 @@ int main(){
     const size_t image_width = 1280;
     const double aspect_ratio = 16./9.;
 
-    sphere* _sphere = new sphere(vec3(0, 0, -1), 0.5, vec3(1, 0, 0));
+    std::shared_ptr<sphere> _sphere = std::make_shared<sphere>(vec3(0, 0, -1), 0.5, vec3(1, 0, 0));
     
     scene _scene = scene();
     _scene.add_hittable(_sphere);

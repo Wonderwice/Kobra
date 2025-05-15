@@ -10,11 +10,11 @@ namespace cobra
     scene::~scene()
     {
     }
-    void scene::add_hittable(hittable* object)
+    void scene::add_hittable(std::shared_ptr<hittable> object)
     {
         hittable_list.push_back(object);
     }
-    const std::vector<hittable*> scene::get_hittables() const
+    const std::vector<std::shared_ptr<hittable>> scene::get_hittables() const
     {
         return hittable_list;
     }

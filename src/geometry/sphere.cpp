@@ -32,8 +32,9 @@ bool cobra::sphere::hit(const ray &r, double t_min, double t_max, hit_record& re
 
     rec.t = root;
     rec.point = r.at(rec.t);
-    rec.normal = (rec.point - _center) / _radius;
-    rec.color = color();
+    vec3 outward_normal = (rec.point - _center) / _radius;
+    rec.set_face_normal(r,outward_normal);
+    rec.color = rec.normal;
 
     return true;
 }

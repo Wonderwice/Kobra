@@ -1,6 +1,7 @@
 #pragma once
 #include "geometry/hittable.h"
 #include <vector>
+#include <memory>
 
 namespace cobra
 {
@@ -14,7 +15,7 @@ namespace cobra
     class scene
     {
     private:
-        std::vector<hittable*> hittable_list; ///< List of pointers to hittable objects in the scene.
+        std::vector<std::shared_ptr<hittable>> hittable_list; ///< List of pointers to hittable objects in the scene.
 
     public:
         /// Default constructor
@@ -27,12 +28,12 @@ namespace cobra
          * @brief Adds a hittable object to the scene.
          * @param object Pointer to the hittable object to add.
          */
-        void add_hittable(hittable* object);
+        void add_hittable(std::shared_ptr<hittable> object);
 
         /**
          * @brief Returns the list of hittable objects in the scene.
          * @return A constant vector of pointers to hittable objects.
          */
-        const std::vector<hittable*> get_hittables() const;
+        const std::vector<std::shared_ptr<hittable>> get_hittables() const;
     };
 } // namespace cobra
