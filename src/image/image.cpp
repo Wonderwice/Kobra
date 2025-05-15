@@ -4,7 +4,7 @@ namespace cobra
 {
     size_t image::index(const size_t row, const size_t col) const
     {
-        return row * width + col;
+        return col * height + row;
     }
 
     image::image(const size_t width, const size_t height) : img_buffer(width * height), width(width), height(height)

@@ -5,24 +5,48 @@ namespace cobra
 {
     /**
      * @class camera
-     * @brief A class representing a 3D camera.
+     * @brief Represents a 3D camera for ray generation.
      *
-     * This class provides the representation of a camera in a 3D environnment.
+     * The camera defines the viewport and allows generation of rays
+     * corresponding to image plane coordinates for ray tracing.
      */
     class camera
     {
     private:
-    public:
+        size_t width;           ///< Image width in pixels
+        size_t height;          ///< Image height in pixels
+        float viewport_width;   ///< Viewport width in world units
+        float viewport_height;  ///< Viewport height in world units
+        vec3 pixel_delta_u;     ///< Vector step for moving one pixel horizontally
+        vec3 pixel_delta_v;     ///< Vector step for moving one pixel vertically
+        vec3 pixel00;           ///< Position of the top-left pixel in world space
+        vec3 camera_center;     ///< Camera position in world space
 
-        /// Default constructor
-        camera();
-        /// Default destructor
+    public:
+        /**
+         * @brief Constructs a camera with given parameters.
+         * @param width Image width in pixels.
+         * @param aspect_ratio Aspect ratio of the viewport (width / height).
+         * @param viewport_height Height of the viewport in world units.
+         * @param focal_length Distance from camera center to viewport plane.
+         */
+        camera(const size_t width, const float aspect_ratio, const float viewport_height, const float focal_length);
+
+        /// Default destructor.
         ~camera();
 
-        /// @brief  Generate a ray from the camera to the scene.
-        /// @param u row index on the grid.
-        /// @param v col index on the grid.
-        /// @return 
+        /// @brief Get image width in pixels.
+        size_t image_width() const { return width; }
+
+        /// @brief Get image height in pixels.
+        size_t image_height() const { return height; }
+
+        /**
+         * @brief Generate a ray from the camera passing through the viewport at coordinates (u,v).
+         * @param u Horizontal coordinate normalized between 0 and 1.
+         * @param v Vertical coordinate normalized between 0 and 1.
+         * @return Ray originating at camera center through pixel (u,v).
+         */
         const ray generate_ray(const double u, const double v) const;
     };
 }

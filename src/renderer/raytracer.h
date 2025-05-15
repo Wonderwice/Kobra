@@ -16,8 +16,8 @@ namespace cobra
     class raytracer
     {
     private:
-        const size_t width;       ///< Width of the output image in pixels
-        const size_t height;      ///< Height of the output image in pixels
+        size_t width;       ///< Width of the output image in pixels
+        size_t height;      ///< Height of the output image in pixels
         const size_t nb_samples;  ///< Number of samples per pixel for anti-aliasing
         const size_t depth;       ///< Maximum recursion depth for ray tracing
 
@@ -35,14 +35,12 @@ namespace cobra
     public:
         /**
          * @brief Constructs the raytracer with rendering parameters and scene.
-         * @param width Image width.
-         * @param height Image height.
          * @param nb_samples Number of samples per pixel.
          * @param depth Recursion depth.
          * @param cam Camera object.
          * @param _scene Scene object.
          */
-        raytracer(const size_t width, const size_t height, const size_t nb_samples, const size_t depth, const camera cam, const scene _scene);
+        raytracer(const size_t nb_samples, const size_t depth, const camera cam, const scene _scene);
 
         /**
          * @brief Destructor.
@@ -57,11 +55,11 @@ namespace cobra
 
         /**
          * @brief Trace a ray through the scene to compute its color.
-         * @param ray Ray to trace.
+         * @param r Ray to trace.
          * @param scene Scene to trace in.
          * @param depth Current recursion depth.
          * @return Computed color as vec3.
          */
-        vec3 trace_ray(const ray ray, const scene scene, const size_t depth);
+        vec3 trace_ray(const ray r, const scene scene, const size_t depth);
     };
 } // namespace cobra

@@ -1,12 +1,28 @@
 #include "math/ray.h"
+#include "ray.h"
 
 namespace cobra
 {
-    ray::ray(const vec3 origin, const vec3 direction) : origin(origin), direction(direction)
+    ray::ray(const vec3 &origin, const vec3 &direction) : origin(origin), direction(direction)
     {
     }
 
     ray::~ray()
     {
+    }
+
+    const vec3 &ray::get_origin() const
+    {
+        return origin;
+    }
+
+    const vec3 &ray::get_direction() const
+    {
+        return direction;
+    }
+
+    vec3 ray::at(double t) const
+    {
+        return origin + t * direction;
     }
 }

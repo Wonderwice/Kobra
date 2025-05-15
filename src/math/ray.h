@@ -21,7 +21,7 @@ namespace cobra
          * @param origin The starting point of the ray.
          * @param direction The direction vector of the ray (ideally normalized).
          */
-        ray(const vec3 origin, const vec3 direction);
+        ray(const vec3& origin, const vec3& direction);
 
         /**
          * @brief Destructor.
