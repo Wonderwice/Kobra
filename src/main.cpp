@@ -14,7 +14,7 @@ using namespace cobra;
 
 int main()
 {
-    const size_t image_width = 480;
+    const size_t image_width = 400;
     const double aspect_ratio = 16. / 9.;
     const size_t depth = 50;
     const size_t nb_samples = 100;

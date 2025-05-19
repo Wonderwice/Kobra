@@ -14,14 +14,19 @@ namespace cobra
     class camera
     {
     private:
-        size_t width;           ///< Image width in pixels
-        size_t height;          ///< Image height in pixels
-        double viewport_width;  ///< Viewport width in world units
-        double viewport_height; ///< Viewport height in world units
-        vec3 pixel_delta_u;     ///< Vector step for moving one pixel horizontally
-        vec3 pixel_delta_v;     ///< Vector step for moving one pixel vertically
-        vec3 pixel00;           ///< Position of the top-left pixel in world space
-        vec3 camera_center;     ///< Camera position in world space
+        size_t width;                  ///< Image width in pixels
+        size_t height;                 ///< Image height in pixels
+        double viewport_width;         ///< Viewport width in world units
+        double viewport_height;        ///< Viewport height in world units
+        vec3 pixel_delta_u;            ///< Vector step for moving one pixel horizontally
+        vec3 pixel_delta_v;            ///< Vector step for moving one pixel vertically
+        vec3 pixel00;                  ///< Position of the top-left pixel in world space
+        vec3 camera_center;            ///< Camera position in world space
+        double vfov = 90;              ///< Vertical view angle (field of view)
+        vec3 lookfrom = vec3(0, 0, 0); ///< Point camera is looking from
+        vec3 lookat = vec3(0, 0, -1);  ///< Point camera is looking at
+        vec3 vup = vec3(0, 1, 0);      ///< Camera-relative "up" direction
+        vec3 u, v, w;                  ///< Camera frame basis vectors
 
         /**
          * @brief Returns the vector to a random point in the [-.5,-.5]-[+.5,+.5] unit square.
