@@ -93,6 +93,16 @@ namespace cobra
      * @return The reflected vector.
      */
     static vec3 reflect(const vec3& v, const vec3& n);
+
+    /**
+     * @brief Refracts a vector around a given normal.
+     * @param uv The incoming vector.
+     * @param n The normal vector.
+     * @param Refractive index etai divided by etat.
+     * @return The refracted vector.
+     */
+    static vec3 refract(const vec3& uv, const vec3& n, double etai_over_etat);
+
   };
 
   /// Alias for vec3 used when representing 3D points.
