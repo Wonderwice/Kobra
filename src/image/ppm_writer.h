@@ -39,5 +39,12 @@ namespace cobra
          * @return true if writing succeeds, false otherwise.
          */
         bool write(const image &image, std::string filename) const override;
+
+        /**
+         * @brief Convert values from linear space to gamma space.
+         * @param The value to convert.
+         * @return The converted value.
+         */
+        double linear_to_gamma(double linear_component) const;
     };
 }

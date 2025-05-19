@@ -22,12 +22,12 @@ namespace cobra
     double vec3::y() const { return e[1]; }
     double vec3::z() const { return e[2]; }
 
-    static vec3 random()
+    vec3 vec3::random()
     {
         return vec3(random_double(), random_double(), random_double());
     }
 
-    static vec3 random(double min, double max)
+    vec3 vec3::random(double min, double max)
     {
         return vec3(random_double(min, max), random_double(min, max), random_double(min, max));
     }
@@ -145,7 +145,7 @@ namespace cobra
         return v / v.length();
     }
 
-    inline vec3 random_unit_vector()
+    vec3 random_unit_vector()
     {
         {
             while (true)
@@ -157,7 +157,7 @@ namespace cobra
             }
         }
     }
-    inline vec3 random_on_hemisphere(const vec3 &normal)
+    vec3 random_on_hemisphere(const vec3 &normal)
     {
         vec3 on_unit_sphere = random_unit_vector();
         if (dot(on_unit_sphere, normal) > 0.0) // In the same hemisphere as the normal

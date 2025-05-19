@@ -12,6 +12,8 @@ using namespace cobra;
 int main(){
     const size_t image_width = 720;
     const double aspect_ratio = 16./9.;
+    const size_t depth = 50;
+    const size_t nb_samples = 10;
 
     std::shared_ptr<sphere> _sphere = std::make_shared<sphere>(vec3(0, 0, -1), 0.5, vec3(1, 0, 0));
     
@@ -19,7 +21,7 @@ int main(){
     _scene.add_hittable(_sphere);
     _scene.add_hittable(std::make_shared<sphere>(vec3(0,-100.5,-1), 100,vec3(0.3, 0.3, 0.3)));
 
-    raytracer ray_tracer(10, 1, camera(image_width,aspect_ratio,2,1),_scene);
+    raytracer ray_tracer(nb_samples, depth, camera(image_width,aspect_ratio,2,1),_scene);
 
     const image img = ray_tracer.render_image();
     ppm_writer img_writer;

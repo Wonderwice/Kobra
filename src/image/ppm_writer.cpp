@@ -1,11 +1,20 @@
 #include "image/ppm_writer.h"
 #include <fstream>
+#include <cmath>
 
 namespace cobra
 {
     ppm_writer::ppm_writer() {}
 
     ppm_writer::~ppm_writer() {}
+
+    double ppm_writer::linear_to_gamma(double linear_component) const
+    {
+        if (linear_component > 0)
+            return std::sqrt(linear_component);
+
+        return 0;
+    }
 
     bool ppm_writer::write(const image &img, std::ostream &os) const
     {
@@ -20,10 +29,10 @@ namespace cobra
 
             for (size_t x = 0; x < width; ++x)
             {
-                vec3 color = img.get_pixel(y,x);
-                int r = std::min(255, std::max(0, static_cast<int>(color.x() * 255.0)));
-                int g = std::min(255, std::max(0, static_cast<int>(color.y() * 255.0)));
-                int b = std::min(255, std::max(0, static_cast<int>(color.z() * 255.0)));
+                vec3 color = img.get_pixel(y, x);
+                int r = std::min(255, std::max(0, static_cast<int>(linear_to_gamma(color.x()) * 255.0)));
+                int g = std::min(255, std::max(0, static_cast<int>(linear_to_gamma(color.y()) * 255.0)));
+                int b = std::min(255, std::max(0, static_cast<int>(linear_to_gamma(color.z()) * 255.0)));
                 os << r << " " << g << " " << b << " ";
             }
             os << "\n";

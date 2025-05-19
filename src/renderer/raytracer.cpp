@@ -1,8 +1,8 @@
+#include <iostream>
 #include "renderer/raytracer.h"
 #include "cobra.h"
 #include "camera/camera.h"
 #include "geometry/sphere.h"
-#include <iostream>
 
 namespace cobra
 {
@@ -39,7 +39,9 @@ namespace cobra
 
     vec3 raytracer::trace_ray(const ray &r, const scene &scene, const size_t depth)
     {
-
+        if(depth <= 0)
+            return vec3(0,0,0);
+            
         hit_record closest_hit;
         double closest_so_far = std::numeric_limits<double>::infinity();
         bool hit_anything = false;
@@ -57,7 +59,8 @@ namespace cobra
 
         if (hit_anything)
         {
-            return closest_hit.color;
+            vec3 direction = closest_hit.normal + random_unit_vector();
+            return 0.5 * trace_ray(ray(closest_hit.point,direction),scene,depth-1);
         }
 
         auto t = 0.5 * (r.get_direction().y() + 1.0);
