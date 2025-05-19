@@ -1,6 +1,6 @@
 #pragma once
 #include <vector>
-#include "math/vec3.h"
+#include "core/vec3.h"
 
 namespace cobra
 {

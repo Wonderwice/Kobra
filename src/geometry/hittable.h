@@ -1,6 +1,6 @@
 #pragma once
-#include "math/ray.h"
-#include "math/hit_record.h"
+#include "core/ray.h"
+#include "core/hit_record.h"
 
 namespace cobra
 {
@@ -15,14 +15,14 @@ namespace cobra
     class hittable
     {
     private:
-        const vec3 _color; ///< Base color of the object.
+        std::shared_ptr<material> _mat; //< Abstraction of the object material.
 
     public:
         /**
          * @brief Constructs a hittable object with a specified color.
-         * @param color The color associated with the object.
+         * @param mat The material associated with the object.
          */
-        hittable(const vec3 &color);
+        hittable(std::shared_ptr<material> mat) : _mat(mat) {};
 
         /**
          * @brief Pure virtual destructor to enforce abstract class.
@@ -45,9 +45,12 @@ namespace cobra
         virtual bool hit(const ray &r, double t_min, double t_max, hit_record &rec) const = 0;
 
         /**
-         * @brief Returns the color of the object.
-         * @return A reference to the color vector.
+         * @brief Returns the material of the object.
+         * @return A pointer to the material.
          */
-        const vec3 &color() const;
+        std::shared_ptr<material> mat() const { return _mat; };
     };
+    inline hittable::~hittable()
+    {
+    }
 }

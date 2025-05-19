@@ -1,8 +1,11 @@
 #pragma once
-#include "math/vec3.h"
+#include "core/vec3.h"
+#include <memory>
 
 namespace cobra
 {
+    class material;
+
     /**
      * @class hit_record
      * @brief Stores information about a ray-object intersection.
@@ -14,11 +17,11 @@ namespace cobra
     class hit_record
     {
     public:
-        vec3 point;      ///< The point of intersection between the ray and the object.
-        vec3 normal;     ///< The normal vector at the intersection point.
-        vec3 color;      ///< The color of the object at the hit point.
-        double t;        ///< The ray parameter (distance from ray origin) at the intersection.
-        bool front_face; ///< Front-face tracking
+        vec3 point;                    ///< The point of intersection between the ray and the object.
+        vec3 normal;                   ///< The normal vector at the intersection point.
+        double t;                      ///< The ray parameter (distance from ray origin) at the intersection.
+        bool front_face;               ///< Front-face tracking
+        std::shared_ptr<material> mat; /// Material representation
 
         /**
          * @brief Sets the hit record normal vector.

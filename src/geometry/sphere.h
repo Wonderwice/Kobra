@@ -1,6 +1,6 @@
 #pragma once
 #include "geometry/hittable.h"
-#include "math/hit_record.h"
+#include "core/hit_record.h"
 
 namespace cobra
 {
@@ -22,9 +22,9 @@ namespace cobra
          * @brief Constructs a sphere with given center, radius, and color.
          * @param center The center of the sphere.
          * @param radius The radius of the sphere.
-         * @param color The color of the sphere.
+         * @param mat The material of the sphere.
          */
-        sphere(const vec3 &center, double radius, const vec3 &color);
+        sphere(const vec3 &center, double radius,std::shared_ptr<material> mat);
 
         /**
          * @brief Default destructor.

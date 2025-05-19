@@ -31,5 +31,5 @@ inline double random_double(double min, double max) {
 }
 
 // Common Headers
-#include "math/ray.h"
-#include "math/vec3.h"
+#include "core/ray.h"
+#include "core/vec3.h"

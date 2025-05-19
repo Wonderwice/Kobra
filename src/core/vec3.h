@@ -66,9 +66,33 @@ namespace cobra
     /// @return The squared length of the vector (more efficient when exact length not needed).
     double length_squared() const;
 
+     /**
+     * @brief Generates a random vector with components in the range [0, 1).
+     * @return A random vec3.
+     */
     static vec3 random();
 
+    /**
+     * @brief Generates a random vector with components in the range [min, max).
+     * @param min Minimum component value.
+     * @param max Maximum component value.
+     * @return A random vec3.
+     */
     static vec3 random(double min, double max);
+
+    /**
+     * @brief Checks whether the vector is close to zero in all dimensions.
+     * @return True if all components are near zero.
+     */
+    bool near_zero() const;
+
+    /**
+     * @brief Reflects a vector around a given normal.
+     * @param v The incoming vector.
+     * @param n The normal vector.
+     * @return The reflected vector.
+     */
+    static vec3 reflect(const vec3& v, const vec3& n);
   };
 
   /// Alias for vec3 used when representing 3D points.

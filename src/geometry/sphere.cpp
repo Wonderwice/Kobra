@@ -1,9 +1,10 @@
 #include "geometry/sphere.h"
 #include "geometry/hittable.h"
-#include "math/vec3.h"
+#include "core/vec3.h"
 #include <cmath>
+#include "hittable.h"
 
-cobra::sphere::sphere(const vec3 &center, double radius,const vec3& color) : hittable(color), _center(center), _radius(radius)
+cobra::sphere::sphere(const vec3 &center, double radius, std::shared_ptr<material> mat) : hittable(mat), _center(center), _radius(radius)
 {
 }
 
@@ -11,7 +12,7 @@ cobra::sphere::~sphere()
 {
 }
 
-bool cobra::sphere::hit(const ray &r, double t_min, double t_max, hit_record& rec) const
+bool cobra::sphere::hit(const ray &r, double t_min, double t_max, hit_record &rec) const
 {
     vec3 oc = r.get_origin() - _center;
     auto a = dot(r.get_direction(), r.get_direction());
@@ -34,7 +35,7 @@ bool cobra::sphere::hit(const ray &r, double t_min, double t_max, hit_record& re
     rec.point = r.at(rec.t);
     vec3 outward_normal = (rec.point - _center) / _radius;
     rec.set_face_normal(r,outward_normal);
-    rec.color = color();
+    rec.mat = mat();
 
     return true;
 }

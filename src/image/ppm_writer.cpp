@@ -25,8 +25,6 @@ namespace cobra
            << width << " " << height << "\n255\n";
         for (size_t y = 0; y < height; ++y)
         {
-            std::clog << "\rScanlines remaining: " << (height - y) << ' ' << std::flush;
-
             for (size_t x = 0; x < width; ++x)
             {
                 vec3 color = img.get_pixel(y, x);

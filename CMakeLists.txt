@@ -15,16 +15,15 @@ include_directories(src)
 # Lister tous les fichiers source (.cpp)
 set(SOURCES
     src/main.cpp
-    src/math/vec3.cpp
+    src/core/vec3.cpp
     src/image/image.cpp
     src/image/ppm_writer.cpp
     src/renderer/raytracer.cpp
     src/camera/camera.cpp
-    src/math/ray.cpp
+    src/core/ray.cpp
     src/scene/scene.cpp
     src/image/ppm_writer.cpp
     src/image/image_writer.cpp
-    src/geometry/hittable.cpp
     src/geometry/sphere.cpp
 )
 

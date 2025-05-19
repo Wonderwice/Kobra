@@ -1,6 +1,6 @@
 #pragma once
-#include "math/ray.h"
-#include "math/vec3.h"
+#include "core/ray.h"
+#include "core/vec3.h"
 
 namespace cobra
 {
@@ -16,8 +16,8 @@ namespace cobra
     private:
         size_t width;           ///< Image width in pixels
         size_t height;          ///< Image height in pixels
-        double viewport_width;   ///< Viewport width in world units
-        double viewport_height;  ///< Viewport height in world units
+        double viewport_width;  ///< Viewport width in world units
+        double viewport_height; ///< Viewport height in world units
         vec3 pixel_delta_u;     ///< Vector step for moving one pixel horizontally
         vec3 pixel_delta_v;     ///< Vector step for moving one pixel vertically
         vec3 pixel00;           ///< Position of the top-left pixel in world space
@@ -36,7 +36,7 @@ namespace cobra
          * @param viewport_height Height of the viewport in world units.
          * @param focal_length Distance from camera center to viewport plane.
          */
-        camera(const size_t width, const float aspect_ratio, float viewport_height, const float focal_length) ;
+        camera(const size_t width, const float aspect_ratio, float viewport_height, const float focal_length);
 
         /// Default destructor.
         ~camera();

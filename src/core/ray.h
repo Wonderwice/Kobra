@@ -1,5 +1,5 @@
 #pragma once
-#include "math/vec3.h"
+#include "core/vec3.h"
 
 namespace cobra
 {
@@ -11,10 +11,15 @@ namespace cobra
     class ray
     {
     private:
-        const vec3 origin;     ///< Starting point of the ray
-        const vec3 direction;  ///< Direction vector of the ray
+        vec3 origin;     ///< Starting point of the ray
+        vec3 direction;  ///< Direction vector of the ray
 
     public:
+        /**
+         * @brief Default constructor for a ray.
+         */
+        ray();
+
         /**
          * @brief Constructs a ray given an origin and a direction.
          * 
@@ -49,5 +54,7 @@ namespace cobra
          * @return The 3D point at parameter t.
          */
         vec3 at(double t) const;
+
+        ray& operator=(const cobra::ray&);
     };
 }

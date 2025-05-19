@@ -3,6 +3,7 @@
 #include "cobra.h"
 #include "camera/camera.h"
 #include "geometry/sphere.h"
+#include "core/material.h"
 
 namespace cobra
 {
@@ -22,6 +23,8 @@ namespace cobra
 
         for (size_t j = 0; j < height; ++j)
         {
+            std::clog << "\rScanlines remaining: " << (height - j) << ' ' << std::flush;
+
             for (size_t i = 0; i < width; ++i)
             {
                 vec3 final_color(0, 0, 0);
@@ -59,8 +62,11 @@ namespace cobra
 
         if (hit_anything)
         {
-            vec3 direction = closest_hit.normal + random_unit_vector();
-            return 0.5 * trace_ray(ray(closest_hit.point,direction),scene,depth-1);
+            ray scattered;
+            vec3 attenuation;
+            if (closest_hit.mat->scatter(r, closest_hit, attenuation, scattered))
+                return attenuation * trace_ray(scattered,_scene, depth-1);
+            return vec3(0,0,0);
         }
 
         auto t = 0.5 * (r.get_direction().y() + 1.0);
