@@ -1,5 +1,5 @@
 #include "renderer/raytracer.h"
-#include "math/ray.h"
+#include "cobra.h"
 #include "camera/camera.h"
 #include "geometry/sphere.h"
 #include <iostream>
@@ -26,9 +26,11 @@ namespace cobra
             {
                 vec3 final_color(0, 0, 0);
 
-                vec3 color_contrib = trace_ray(cam.generate_ray(i,j), _scene, depth);
-                final_color += color_contrib;
-
+                for(size_t sample = 0; sample < nb_samples; ++sample){
+                    vec3 color_contrib = trace_ray(cam.generate_ray(i,j), _scene, depth);
+                    final_color += color_contrib;
+                }
+                final_color /= nb_samples;
                 img_result.set_pixel(j,i, final_color);
             }
         }

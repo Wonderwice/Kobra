@@ -23,6 +23,11 @@ namespace cobra
         vec3 pixel00;           ///< Position of the top-left pixel in world space
         vec3 camera_center;     ///< Camera position in world space
 
+        /**
+         * @brief Returns the vector to a random point in the [-.5,-.5]-[+.5,+.5] unit square.
+         */
+        vec3 sample_square() const;
+
     public:
         /**
          * @brief Constructs a camera with given parameters.

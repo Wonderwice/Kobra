@@ -1,5 +1,8 @@
-#include "vec3.h"
 #include <cmath>
+#include "math/vec3.h"
+#include "cobra.h"
+#include "vec3.h"
+
 namespace cobra
 {
 
@@ -18,6 +21,16 @@ namespace cobra
     double vec3::x() const { return e[0]; }
     double vec3::y() const { return e[1]; }
     double vec3::z() const { return e[2]; }
+
+    static vec3 random()
+    {
+        return vec3(random_double(), random_double(), random_double());
+    }
+
+    static vec3 random(double min, double max)
+    {
+        return vec3(random_double(min, max), random_double(min, max), random_double(min, max));
+    }
 
     // ----------------------------
     // Operators
@@ -130,6 +143,27 @@ namespace cobra
     vec3 unit_vector(const vec3 &v)
     {
         return v / v.length();
+    }
+
+    inline vec3 random_unit_vector()
+    {
+        {
+            while (true)
+            {
+                auto p = vec3::random(-1, 1);
+                auto lensq = p.length_squared();
+                if (1e-160 < lensq && lensq <= 1)
+                    return p / sqrt(lensq);
+            }
+        }
+    }
+    inline vec3 random_on_hemisphere(const vec3 &normal)
+    {
+        vec3 on_unit_sphere = random_unit_vector();
+        if (dot(on_unit_sphere, normal) > 0.0) // In the same hemisphere as the normal
+            return on_unit_sphere;
+        else
+            return -on_unit_sphere;
     }
 
 } // namespace cobra

@@ -65,6 +65,10 @@ namespace cobra
 
     /// @return The squared length of the vector (more efficient when exact length not needed).
     double length_squared() const;
+
+    static vec3 random();
+
+    static vec3 random(double min, double max);
   };
 
   /// Alias for vec3 used when representing 3D points.
@@ -101,4 +105,10 @@ namespace cobra
 
   /// Returns a normalized (unit length) version of the vector.
   vec3 unit_vector(const vec3 &v);
+
+  /// Generate a random vector in the unit sphere.
+  vec3 random_unit_vector();
+
+  /// Generate a random vector on the right hemisphere.
+  vec3 random_on_hemisphere(const vec3 &normal);
 }

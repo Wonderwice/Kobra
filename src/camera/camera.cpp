@@ -1,4 +1,5 @@
 #include "camera/camera.h"
+#include "cobra.h"
 
 namespace cobra
 {
@@ -34,10 +35,19 @@ namespace cobra
     // Ray generation
     // ---------------------------
 
+    vec3 camera::sample_square() const {
+        return vec3(random_double() - 0.5, random_double() - 0.5, 0);
+    }
+
     const ray camera::generate_ray(const double u, const double v) const
     {
-        vec3 pixel_pos = pixel00 + u * pixel_delta_u + v * pixel_delta_v;
-        vec3 direction = pixel_pos - camera_center;
-        return ray(camera_center, direction);
+        auto offset = sample_square();
+        auto pixel_sample = pixel00
+                          + ((u + offset.x()) * pixel_delta_u)
+                          + ((v + offset.y()) * pixel_delta_v);
+
+        auto ray_direction = pixel_sample - camera_center;
+
+        return ray(camera_center, ray_direction);
     }
 }
