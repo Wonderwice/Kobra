@@ -7,17 +7,16 @@ namespace cobra
     // Constructors & Destructors
     // ---------------------------
 
-    camera::camera(const size_t width, const float aspect_ratio, float viewport_height, const float focal_length) : width(width)
+    camera::camera(const size_t width, const float aspect_ratio) : width(width)
     {
         height = int(width / aspect_ratio);
         height = (height < 1) ? 1 : height;
 
         camera_center = lookfrom;
 
-        auto focal_len = (lookfrom - lookat).length();
         double theta = degrees_to_radians(vfov);
         double h = std::tan(theta / 2);
-        viewport_height = 2 * h * focal_len;
+        viewport_height = 2 * h * focus_dist;
         viewport_width = viewport_height * (double(width) / height);
 
         w = unit_vector(lookfrom - lookat);
@@ -33,8 +32,12 @@ namespace cobra
         pixel_delta_v = viewport_v / height;
 
         // Calculate the location of the upper left pixel.
-        auto viewport_upper_left = camera_center - (focal_length * w) - viewport_u/2 - viewport_v/2;
+        auto viewport_upper_left = camera_center - (focus_dist * w) - viewport_u/2 - viewport_v/2;
         pixel00 = viewport_upper_left + 0.5 * (pixel_delta_u + pixel_delta_v);
+
+        auto defocus_radius = focus_dist * std::tan(degrees_to_radians(defocus_angle / 2));
+        defocus_disk_u = u * defocus_radius;
+        defocus_disk_v = v * defocus_radius;
     }
 
     camera::~camera()
@@ -55,8 +58,16 @@ namespace cobra
         auto offset = sample_square();
         auto pixel_sample = pixel00 + ((u + offset.x()) * pixel_delta_u) + ((v + offset.y()) * pixel_delta_v);
 
-        auto ray_direction = pixel_sample - camera_center;
+        auto ray_origin = (defocus_angle <= 0) ? camera_center : defocus_disk_sample();
 
-        return ray(camera_center, ray_direction);
+        auto ray_direction = pixel_sample - ray_origin;
+
+        return ray(ray_origin, ray_direction);
+    }
+
+    vec3 camera::defocus_disk_sample() const {
+        // Returns a random point in the camera defocus disk.
+        auto p = vec3::random_in_unit_disk();
+        return camera_center + (p[0] * defocus_disk_u) + (p[1] * defocus_disk_v);
     }
 }

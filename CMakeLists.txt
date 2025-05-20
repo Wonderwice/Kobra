@@ -33,4 +33,4 @@ add_executable(cobra ${SOURCES})
 target_include_directories(cobra PRIVATE src)
 
 # (Optionnel mais recommandé) Définir les options de compilation pour la cible
-target_compile_options(cobra PRIVATE -Wall -Wextra) # Active les warnings
+target_compile_options(cobra PRIVATE -Wall -Wextra -O3)

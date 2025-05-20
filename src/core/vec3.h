@@ -103,6 +103,11 @@ namespace cobra
      */
     static vec3 refract(const vec3& uv, const vec3& n, double etai_over_etat);
 
+    /**
+     * @brief Give a random point in a the unit disk.
+     * @return The random vector with z = 0.
+     */
+    static vec3 random_in_unit_disk();
   };
 
   /// Alias for vec3 used when representing 3D points.

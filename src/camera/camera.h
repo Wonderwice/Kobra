@@ -14,34 +14,40 @@ namespace cobra
     class camera
     {
     private:
-        size_t width;                  ///< Image width in pixels
-        size_t height;                 ///< Image height in pixels
-        double viewport_width;         ///< Viewport width in world units
-        double viewport_height;        ///< Viewport height in world units
-        vec3 pixel_delta_u;            ///< Vector step for moving one pixel horizontally
-        vec3 pixel_delta_v;            ///< Vector step for moving one pixel vertically
-        vec3 pixel00;                  ///< Position of the top-left pixel in world space
-        vec3 camera_center;            ///< Camera position in world space
-        double vfov = 90;              ///< Vertical view angle (field of view)
-        vec3 lookfrom = vec3(0, 0, 0); ///< Point camera is looking from
-        vec3 lookat = vec3(0, 0, -1);  ///< Point camera is looking at
-        vec3 vup = vec3(0, 1, 0);      ///< Camera-relative "up" direction
-        vec3 u, v, w;                  ///< Camera frame basis vectors
+        size_t width;                   ///< Image width in pixels
+        size_t height;                  ///< Image height in pixels
+        double viewport_width;          ///< Viewport width in world units
+        double viewport_height;         ///< Viewport height in world units
+        vec3 pixel_delta_u;             ///< Vector step for moving one pixel horizontally
+        vec3 pixel_delta_v;             ///< Vector step for moving one pixel vertically
+        vec3 pixel00;                   ///< Position of the top-left pixel in world space
+        vec3 camera_center;             ///< Camera position in world space
+        double vfov = 20;               ///< Vertical view angle (field of view)
+        vec3 lookfrom = vec3(13, 2, 3); ///< Point camera is looking from
+        vec3 lookat = vec3(0, 0, 0);    ///< Point camera is looking at
+        vec3 vup = vec3(0, 1, 0);       ///< Camera-relative "up" direction
+        vec3 u, v, w;                   ///< Camera frame basis vectors
+        double defocus_angle = 0.6;       ///< Variation angle of rays through each pixel
+        double focus_dist = 10;         ///< Distance from camera lookfrom point to plane of perfect focus
+        vec3 defocus_disk_u;            ///< Defocus disk horizontal radius
+        vec3 defocus_disk_v;            ///< Defocus disk vertical radius
 
         /**
          * @brief Returns the vector to a random point in the [-.5,-.5]-[+.5,+.5] unit square.
          */
         vec3 sample_square() const;
+        /**
+         * @brief Returns the vector to a random point in the defocus disk
+         */
+        vec3 defocus_disk_sample() const;
 
     public:
         /**
          * @brief Constructs a camera with given parameters.
          * @param width Image width in pixels.
          * @param aspect_ratio Aspect ratio of the viewport (width / height).
-         * @param viewport_height Height of the viewport in world units.
-         * @param focal_length Distance from camera center to viewport plane.
          */
-        camera(const size_t width, const float aspect_ratio, float viewport_height, const float focal_length);
+        camera(const size_t width, const float aspect_ratio);
 
         /// Default destructor.
         ~camera();
