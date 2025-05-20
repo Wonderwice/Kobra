@@ -24,9 +24,9 @@ namespace cobra
             vec3 direction;
 
             if (cannot_refract || reflectance(cos_theta, ri) > random_double())
-                direction = vec3::reflect(unit_direction, rec.normal);
+                direction = reflect(unit_direction, rec.normal);
             else
-                direction = vec3::refract(unit_direction, rec.normal, ri);
+                direction = refract(unit_direction, rec.normal, ri);
 
             scattered = ray(rec.point, direction);
             return true;

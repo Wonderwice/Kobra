@@ -36,7 +36,7 @@ namespace cobra
          */
         bool scatter(const ray &r_in, const hit_record &rec, vec3 &attenuation, ray &scattered) const override
         {
-            vec3 reflected = vec3::reflect(r_in.get_direction(), rec.normal);
+            vec3 reflected = reflect(r_in.get_direction(), rec.normal);
             reflected = unit_vector(reflected) + (fuzz * random_unit_vector());
             scattered = ray(rec.point, reflected);
             attenuation = albedo;

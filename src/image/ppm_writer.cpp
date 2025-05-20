@@ -1,6 +1,7 @@
 #include "image/ppm_writer.h"
 #include <fstream>
 #include <cmath>
+#include "image_writer.h"
 
 namespace cobra
 {

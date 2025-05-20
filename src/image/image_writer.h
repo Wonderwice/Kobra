@@ -21,7 +21,7 @@ namespace cobra
         /**
          * @brief Default constructor.
          */
-        image_writer();
+        image_writer() {}
 
         /**
          * @brief Virtual destructor.
@@ -50,4 +50,8 @@ namespace cobra
          */
         virtual bool write(const image &image, std::string filename) const = 0;
     };
+
+    inline image_writer::~image_writer()
+    {
+    }
 }

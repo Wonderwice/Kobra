@@ -1,13 +1,25 @@
 #include "camera/camera.h"
 #include "cobra.h"
-
+#include "camera.h"
+#include "image/image.h"
+#include "core/hit_record.h"
+#include "scene/scene.h"
+#include "core/material.h"
 namespace cobra
 {
     // ----------------------------
     // Constructors & Destructors
     // ---------------------------
 
-    camera::camera(const size_t width, const float aspect_ratio) : width(width)
+    camera::camera()
+    {
+    }
+
+    camera::~camera()
+    {
+    }
+
+    void camera::init()
     {
         height = int(width / aspect_ratio);
         height = (height < 1) ? 1 : height;
@@ -32,16 +44,12 @@ namespace cobra
         pixel_delta_v = viewport_v / height;
 
         // Calculate the location of the upper left pixel.
-        auto viewport_upper_left = camera_center - (focus_dist * w) - viewport_u/2 - viewport_v/2;
+        auto viewport_upper_left = camera_center - (focus_dist * w) - viewport_u / 2 - viewport_v / 2;
         pixel00 = viewport_upper_left + 0.5 * (pixel_delta_u + pixel_delta_v);
 
         auto defocus_radius = focus_dist * std::tan(degrees_to_radians(defocus_angle / 2));
         defocus_disk_u = u * defocus_radius;
         defocus_disk_v = v * defocus_radius;
-    }
-
-    camera::~camera()
-    {
     }
 
     // ----------------------------
@@ -65,9 +73,73 @@ namespace cobra
         return ray(ray_origin, ray_direction);
     }
 
-    vec3 camera::defocus_disk_sample() const {
+    vec3 camera::defocus_disk_sample() const
+    {
         // Returns a random point in the camera defocus disk.
-        auto p = vec3::random_in_unit_disk();
+        auto p = random_in_unit_disk();
         return camera_center + (p[0] * defocus_disk_u) + (p[1] * defocus_disk_v);
+    }
+
+    image camera::render_image(const scene &world)
+    {
+        init();
+        image img_result(width, height);
+
+#pragma omp parallel for schedule(dynamic, 1)
+        for (size_t j = 0; j < height; ++j)
+        {
+            for (size_t i = 0; i < width; ++i)
+            {
+                vec3 final_color(0, 0, 0);
+
+                for (size_t sample = 0; sample < nb_samples; ++sample)
+                {
+                    vec3 color_contrib = trace_ray(generate_ray(i, j), world, depth);
+                    final_color += color_contrib;
+                }
+                final_color /= nb_samples;
+                img_result.set_pixel(j, i, final_color);
+            }
+        }
+        return img_result;
+    }
+
+    vec3 camera::trace_ray(const ray &r, const scene &world, const size_t depth)
+    {
+        if (depth <= 0)
+            return vec3(0, 0, 0);
+
+        hit_record closest_hit;
+        double closest_so_far = std::numeric_limits<double>::infinity();
+        bool hit_anything = false;
+
+        for (const auto &obj : world.get_hittables())
+        {
+            hit_record temp_hit;
+            if (obj->hit(r, 0.001, closest_so_far, temp_hit))
+            {
+                hit_anything = true;
+                closest_so_far = temp_hit.t;
+                closest_hit = temp_hit;
+            }
+        }
+
+        if (hit_anything)
+        {
+            ray scattered;
+            vec3 attenuation;
+            if (closest_hit.mat->scatter(r, closest_hit, attenuation, scattered))
+                return attenuation * trace_ray(scattered, world, depth - 1);
+            return vec3(0, 0, 0);
+        }
+
+        auto t = 0.5 * (r.get_direction().y() + 1.0);
+        return (1.0 - t) * vec3(1.0, 1.0, 1.0) + t * vec3(0.5, 0.7, 1.0);
+    }
+
+    double camera::fRand(double fMin, double fMax)
+    {
+        double f = (double)rand() / RAND_MAX;
+        return fMin + f * (fMax - fMin);
     }
 }

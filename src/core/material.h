@@ -21,7 +21,7 @@ namespace cobra
         /**
          * @brief Computes how an incoming ray scatters upon hitting a surface.
          *
-         * This method should be overridden by derived material types (e.g., Lambertian, Metal, Dielectric).
+         * This method will be overridden by derived material types (e.g., Lambertian, Metal, Dielectric).
          *
          * @param r_in The incoming ray that hit the surface.
          * @param rec A hit record containing details of the intersection.
@@ -30,9 +30,6 @@ namespace cobra
          * @return True if the ray is scattered, false otherwise.
          */
         virtual bool scatter(
-            const ray &r_in, const hit_record &rec, vec3 &attenuation, ray &scattered) const
-        {
-            return false;
-        }
+            const ray &r_in, const hit_record &rec, vec3 &attenuation, ray &scattered) const = 0;
     };
 }

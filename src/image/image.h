@@ -1,20 +1,20 @@
 #pragma once
 #include <vector>
-#include "core/vec3.h"
+#include "cobra.h"
 
 namespace cobra
 {
     /**
      * @brief Represents a 2D image with pixels stored as vec3 color values.
-     * 
+     *
      * The image stores pixel colors in row-major order internally.
      */
     class image
     {
     private:
         std::vector<vec3> img_buffer; ///< Flat buffer holding color data of all pixels
-        const size_t width;            ///< Image width in pixels
-        const size_t height;           ///< Image height in pixels
+        const size_t width;           ///< Image width in pixels
+        const size_t height;          ///< Image height in pixels
 
         /**
          * @brief Helper to compute the linear index in img_buffer from (row, col).
@@ -22,7 +22,10 @@ namespace cobra
          * @param col Column index of the pixel.
          * @return Index in the img_buffer vector.
          */
-        size_t index(const size_t row, const size_t col) const;
+        size_t index(const size_t row, const size_t col) const
+        {
+            return row * width + col;
+        }
 
     public:
         /**
@@ -31,24 +34,32 @@ namespace cobra
          * @param width Width of the image.
          * @param height Height of the image.
          */
-        image(const size_t width, const size_t height);
+        image(const size_t width, const size_t height) : img_buffer(width * height), width(width), height(height)
+        {
+        }
 
         /**
          * @brief Destructor.
          */
-        ~image();
+        ~image() {}
 
         /**
          * @brief Get the width of the image.
          * @return Image width in pixels.
          */
-        size_t get_width() const;
+        size_t get_width() const
+        {
+            return width;
+        }
 
         /**
          * @brief Get the height of the image.
          * @return Image height in pixels.
          */
-        size_t get_height() const;
+        size_t get_height() const
+        {
+            return height;
+        }
 
         /**
          * @brief Set the color of a pixel at (row, col).
@@ -56,7 +67,10 @@ namespace cobra
          * @param col Column index of the pixel.
          * @param color The color value to set.
          */
-        void set_pixel(const size_t row, const size_t col, const vec3& color);
+        void set_pixel(const size_t row, const size_t col, const vec3 &color)
+        {
+            img_buffer[index(row, col)] = color;
+        }
 
         /**
          * @brief Get the color of a pixel at (row, col).
@@ -64,6 +78,9 @@ namespace cobra
          * @param col Column index of the pixel.
          * @return Color value of the pixel.
          */
-        vec3 get_pixel(const size_t row, const size_t col) const;
+        vec3 get_pixel(const size_t row, const size_t col) const
+        {
+            return img_buffer[index(row, col)];
+        }
     };
 }
