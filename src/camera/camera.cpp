@@ -111,18 +111,7 @@ namespace cobra
 
         hit_record closest_hit;
         double closest_so_far = std::numeric_limits<double>::infinity();
-        bool hit_anything = false;
-
-        for (const auto &obj : world.get_hittables())
-        {
-            hit_record temp_hit;
-            if (obj->hit(r, 0.001, closest_so_far, temp_hit))
-            {
-                hit_anything = true;
-                closest_so_far = temp_hit.t;
-                closest_hit = temp_hit;
-            }
-        }
+        bool hit_anything = world.hit(r,interval(0.001,closest_so_far), closest_hit);
 
         if (hit_anything)
         {

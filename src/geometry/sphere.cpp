@@ -4,15 +4,17 @@
 #include <cmath>
 #include "hittable.h"
 
-cobra::sphere::sphere(const vec3 &center, double radius, std::shared_ptr<material> mat) : hittable(mat), _center(center), _radius(radius)
+cobra::sphere::sphere(const vec3 &center, double radius, std::shared_ptr<material> mat) : _mat(mat), _center(center), _radius(radius)
 {
+    auto rvec = vec3(radius,radius,radius);
+    bbox = aabb(center -rvec,center + rvec);
 }
 
 cobra::sphere::~sphere()
 {
 }
 
-bool cobra::sphere::hit(const ray &r, double t_min, double t_max, hit_record &rec) const
+bool cobra::sphere::hit(const ray &r, interval ray_t, hit_record &rec) const
 {
     vec3 oc = r.get_origin() - _center;
     auto a = dot(r.get_direction(), r.get_direction());
@@ -25,9 +27,9 @@ bool cobra::sphere::hit(const ray &r, double t_min, double t_max, hit_record &re
     auto sqrt_d = std::sqrt(discriminant);
     double root = (-half_b - sqrt_d) / a;
 
-    if (root < t_min || root > t_max) {
+    if (!ray_t.surrounds(root)) {
         root = (-half_b + sqrt_d) / a;
-        if (root < t_min || root > t_max)
+        if (!ray_t.surrounds(root))
             return false;
     }
 

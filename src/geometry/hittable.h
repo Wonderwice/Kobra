@@ -1,6 +1,8 @@
 #pragma once
 #include "core/ray.h"
 #include "core/hit_record.h"
+#include "core/interval.h"
+#include "core/aabb.h"
 
 namespace cobra
 {
@@ -14,15 +16,11 @@ namespace cobra
      */
     class hittable
     {
-    private:
-        std::shared_ptr<material> _mat; //< Abstraction of the object material.
-
     public:
         /**
-         * @brief Constructs a hittable object with a specified color.
-         * @param mat The material associated with the object.
+         * @brief Default constructor.
          */
-        hittable(std::shared_ptr<material> mat) : _mat(mat) {};
+        hittable() = default;
 
         /**
          * @brief Pure virtual destructor to enforce abstract class.
@@ -37,20 +35,22 @@ namespace cobra
          * is populated with intersection data.
          *
          * @param r The ray to test against the object.
-         * @param t_min Minimum valid value of t for the hit.
-         * @param t_max Maximum valid value of t for the hit.
+         * @param ray_t Interval of min and max of t.
          * @param rec The record to fill with hit information if a hit occurs.
          * @return true if the ray intersects the object, false otherwise.
          */
-        virtual bool hit(const ray &r, double t_min, double t_max, hit_record &rec) const = 0;
+        virtual bool hit(const ray &r, interval ray_t, hit_record &rec) const = 0;
 
         /**
-         * @brief Returns the material of the object.
-         * @return A pointer to the material.
+         * @brief Returns the axis-aligned bounding box (AABB) of the object.
+         *
+         * Used for spatial acceleration structures (e.g. BVH). This must return a
+         * tight-fitting bounding box that encloses the object at all times.
+         *
+         * @return An AABB representing the bounding volume of the object.
          */
-        std::shared_ptr<material> mat() const { return _mat; };
+        virtual aabb bounding_box() const = 0;
     };
-    inline hittable::~hittable()
-    {
-    }
+    
+    inline hittable::~hittable() {}
 }
