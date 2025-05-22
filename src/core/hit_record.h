@@ -21,7 +21,9 @@ namespace cobra
         vec3 normal;                   ///< The normal vector at the intersection point.
         double t;                      ///< The ray parameter (distance from ray origin) at the intersection.
         bool front_face;               ///< Front-face tracking
-        std::shared_ptr<material> mat; /// Material representation
+        std::shared_ptr<material> mat; ///< Material representation
+        double u;                      ///< Texture coordinate (latitude)
+        double v;                      ///< Texture coordinate (longitude)
 
         /**
          * @brief Sets the hit record normal vector.

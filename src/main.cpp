@@ -54,8 +54,8 @@ const image fill_with_spheres()
     camera cam;
 
     cam.aspect_ratio = 16.0 / 9.0;
-    cam.width = 800;
-    cam.nb_samples = 5;
+    cam.width = 1200;
+    cam.nb_samples = 100;
     cam.depth = 30;
 
     cam.vfov = 20;
@@ -67,8 +67,8 @@ const image fill_with_spheres()
     cam.focus_dist = 10.0;
     scene world = scene();
 
-    auto ground_material = std::make_shared<lambertian>(vec3(0.5, 0.5, 0.5));
-    world.add_hittable(std::make_shared<sphere>(vec3(0, -1000, 0), 1000, ground_material));
+    auto checker = std::make_shared<checker_texture>(0.32, vec3(.2, .3, .1), vec3(.9, .9, .9));
+    world.add_hittable(std::make_shared<sphere>(vec3(0,-1000,0), 1000, std::make_shared<lambertian>(checker)));
 
     for (int a = -11; a < 11; a++)
     {
@@ -125,7 +125,7 @@ int main()
 
     std::unique_ptr<image> img;
 
-    switch (2)
+    switch (1)
     {
     case 1:
         img = std::make_unique<image>(fill_with_spheres());

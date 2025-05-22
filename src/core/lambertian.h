@@ -3,6 +3,8 @@
 #include "core/material.h"
 #include "cobra.h"
 #include "core/hit_record.h"
+#include "core/texture.h"
+#include <memory>
 
 namespace cobra
 {
@@ -17,13 +19,14 @@ namespace cobra
     class lambertian : public material
     {
     private:
-        vec3 albedo; ///< The surface color (reflectivity) of the material.
+        shared_ptr<texture> tex; ///< The surface texture.
     public:
         /**
          * @brief Constructs a Lambertian material with the given albedo.
          * @param albedo The color that the surface reflects.
          */
-        lambertian(const vec3 &albedo) : albedo(albedo) {}
+        lambertian(const vec3 &albedo) : tex(make_shared<solid_color>(albedo)) {}
+        lambertian(std::shared_ptr<texture> tex) : tex(tex) {}
 
         /**
          * @brief Determines how the incoming ray is scattered upon hitting the surface.
@@ -41,7 +44,7 @@ namespace cobra
             if (scatter_direction.near_zero())
                 scatter_direction = rec.normal;
             scattered = ray(rec.point, scatter_direction);
-            attenuation = albedo;
+            attenuation = tex->value(rec.u, rec.v, rec.point);
             return true;
         }
     };
