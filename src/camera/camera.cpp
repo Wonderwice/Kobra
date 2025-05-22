@@ -117,13 +117,16 @@ namespace cobra
         {
             ray scattered;
             vec3 attenuation;
-            if (closest_hit.mat->scatter(r, closest_hit, attenuation, scattered))
-                return attenuation * trace_ray(scattered, world, depth - 1);
-            return vec3(0, 0, 0);
+            vec3 emission = closest_hit.mat->emitted(closest_hit.u, closest_hit.v, closest_hit.point);
+
+            if (!closest_hit.mat->scatter(r, closest_hit, attenuation, scattered))
+                return emission;
+            
+            return emission + attenuation * trace_ray(scattered, world, depth - 1);
+
         }
 
-        auto t = 0.5 * (r.get_direction().y() + 1.0);
-        return (1.0 - t) * vec3(1.0, 1.0, 1.0) + t * vec3(0.5, 0.7, 1.0);
+        return background;
     }
 
     double camera::fRand(double fMin, double fMax)

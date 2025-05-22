@@ -11,6 +11,7 @@
 #include "core/dieletric.h"
 #include "core/bvh_node.h"
 #include "geometry/quad.h"
+#include "core/light.h"
 
 using namespace cobra;
 
@@ -45,6 +46,7 @@ const image quads()
     cam.vup = vec3(0, 1, 0);
 
     cam.defocus_angle = 0;
+    cam.background = vec3(0.70, 0.80, 1.00);
 
     return cam.render_image(world);
 }
@@ -55,8 +57,8 @@ const image fill_with_spheres()
 
     cam.aspect_ratio = 16.0 / 9.0;
     cam.width = 1200;
-    cam.nb_samples = 100;
-    cam.depth = 30;
+    cam.nb_samples = 500;
+    cam.depth = 50;
 
     cam.vfov = 20;
     cam.lookfrom = vec3(13, 2, 3);
@@ -65,10 +67,12 @@ const image fill_with_spheres()
 
     cam.defocus_angle = 0.6;
     cam.focus_dist = 10.0;
+    cam.background = vec3(0.70, 0.80, 1.00);
+
     scene world = scene();
 
     auto checker = std::make_shared<checker_texture>(0.32, vec3(.2, .3, .1), vec3(.9, .9, .9));
-    world.add_hittable(std::make_shared<sphere>(vec3(0,-1000,0), 1000, std::make_shared<lambertian>(checker)));
+    world.add_hittable(std::make_shared<sphere>(vec3(0, -1000, 0), 1000, std::make_shared<lambertian>(checker)));
 
     for (int a = -11; a < 11; a++)
     {
@@ -119,19 +123,120 @@ const image fill_with_spheres()
     return cam.render_image(world);
 }
 
+const image checkered_spheres()
+{
+    scene world;
+
+    auto checker = make_shared<checker_texture>(0.32, vec3(.2, .3, .1), vec3(.9, .9, .9));
+
+    world.add_hittable(make_shared<sphere>(vec3(0, -10, 0), 10, make_shared<lambertian>(checker)));
+    world.add_hittable(make_shared<sphere>(vec3(0, 10, 0), 10, make_shared<lambertian>(checker)));
+
+    camera cam;
+
+    cam.aspect_ratio = 16.0 / 9.0;
+    cam.width = 400;
+    cam.nb_samples = 100;
+    cam.depth = 50;
+
+    cam.vfov = 20;
+    cam.lookfrom = vec3(13, 2, 3);
+    cam.lookat = vec3(0, 0, 0);
+    cam.vup = vec3(0, 1, 0);
+    cam.background = vec3(0.70, 0.80, 1.00);
+
+    cam.defocus_angle = 0;
+
+    return cam.render_image(world);
+}
+
+const image simple_light()
+{
+    scene world;
+
+    shared_ptr<texture> pertext = make_shared<solid_color>(vec3(0.4, 0.4, 0.4));
+    world.add_hittable(make_shared<sphere>(vec3(0, -1000, 0), 1000, make_shared<lambertian>(pertext)));
+    world.add_hittable(make_shared<sphere>(vec3(0, 2, 0), 2, make_shared<lambertian>(pertext)));
+
+    auto difflight = make_shared<diffuse_light>(vec3(4, 4, 4));
+    world.add_hittable(make_shared<sphere>(vec3(0, 7, 0), 2, difflight));
+
+    world.add_hittable(make_shared<quad>(vec3(3, 1, -2), vec3(2, 0, 0), vec3(0, 2, 0), difflight));
+
+    camera cam;
+
+    cam.aspect_ratio = 16.0 / 9.0;
+    cam.width = 400;
+    cam.nb_samples = 100;
+    cam.depth = 50;
+    cam.background = vec3(0, 0, 0);
+
+    cam.vfov = 20;
+    cam.lookfrom = vec3(26, 3, 6);
+    cam.lookat = vec3(0, 2, 0);
+    cam.vup = vec3(0, 1, 0);
+
+    cam.defocus_angle = 0;
+
+    return cam.render_image(world);
+}
+
+const image cornell_box()
+{
+    scene world;
+
+    auto red = make_shared<lambertian>(vec3(.65, .05, .05));
+    auto white = make_shared<lambertian>(vec3(.73, .73, .73));
+    auto green = make_shared<lambertian>(vec3(.12, .45, .15));
+    auto light = make_shared<diffuse_light>(vec3(15, 15, 15));
+
+    world.add_hittable(make_shared<quad>(vec3(555, 0, 0), vec3(0, 555, 0), vec3(0, 0, 555), green));
+    world.add_hittable(make_shared<quad>(vec3(0, 0, 0), vec3(0, 555, 0), vec3(0, 0, 555), red));
+    world.add_hittable(make_shared<quad>(vec3(343, 554, 332), vec3(-130, 0, 0), vec3(0, 0, -105), light));
+    world.add_hittable(make_shared<quad>(vec3(0, 0, 0), vec3(555, 0, 0), vec3(0, 0, 555), white));
+    world.add_hittable(make_shared<quad>(vec3(555, 555, 555), vec3(-555, 0, 0), vec3(0, 0, -555), white));
+    world.add_hittable(make_shared<quad>(vec3(0, 0, 555), vec3(555, 0, 0), vec3(0, 555, 0), white));
+
+    camera cam;
+
+    cam.aspect_ratio = 1.0;
+    cam.width = 600;
+    cam.nb_samples = 200;
+    cam.depth = 50;
+    cam.background = vec3(0, 0, 0);
+
+    cam.vfov = 40;
+    cam.lookfrom = vec3(278, 278, -800);
+    cam.lookat = vec3(278, 278, 0);
+    cam.vup = vec3(0, 1, 0);
+
+    cam.defocus_angle = 0;
+
+    return cam.render_image(world);
+}
+
 int main()
 {
     auto start = std::chrono::high_resolution_clock::now();
 
     std::unique_ptr<image> img;
 
-    switch (1)
+    switch (5)
     {
     case 1:
         img = std::make_unique<image>(fill_with_spheres());
         break;
     case 2:
         img = std::make_unique<image>(quads());
+        break;
+    case 3:
+        img = std::make_unique<image>(checkered_spheres());
+        break;
+    case 4:
+        img = std::make_unique<image>(simple_light());
+        break;
+    case 5:
+        img = std::make_unique<image>(cornell_box());
         break;
     }
 

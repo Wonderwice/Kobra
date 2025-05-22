@@ -45,18 +45,19 @@ namespace cobra
         vec3 defocus_disk_sample() const;
 
     public:
-        size_t width = 400;             ///< Image width in pixels
-        size_t height;                  ///< Image height in pixels
+        size_t width = 400;       ///< Image width in pixels
+        size_t height;            ///< Image height in pixels
         double aspect_ratio = 1.; ///< Aspect ratio.
-        size_t nb_samples = 10;         ///< Number of samples for anti-aliasing.
-        size_t depth = 10;              ///< Number of rebound for a primary ray.
+        size_t nb_samples = 10;   ///< Number of samples for anti-aliasing.
+        size_t depth = 10;        ///< Number of rebound for a primary ray.
 
-        double vfov = 90;               ///< Vertical view angle (field of view)
-        vec3 lookfrom = vec3(0,0,0); ///< Point camera is looking from
-        vec3 lookat = vec3(0, 0, -1);    ///< Point camera is looking at
-        vec3 vup = vec3(0, 1, 0);       ///< Camera-relative "up" direction
-        double defocus_angle = 0;     ///< Variation angle of rays through each pixel
-        double focus_dist = 10;         ///< Distance from camera lookfrom point to plane of perfect focus
+        double vfov = 90;              ///< Vertical view angle (field of view)
+        vec3 lookfrom = vec3(0, 0, 0); ///< Point camera is looking from
+        vec3 lookat = vec3(0, 0, -1);  ///< Point camera is looking at
+        vec3 vup = vec3(0, 1, 0);      ///< Camera-relative "up" direction
+        double defocus_angle = 0;      ///< Variation angle of rays through each pixel
+        double focus_dist = 10;        ///< Distance from camera lookfrom point to plane of perfect focus
+        vec3 background;               ///< Scene background color
 
         /**
          * @brief Constructs a camera.
@@ -96,6 +97,6 @@ namespace cobra
          * @param depth Current recursion depth.
          * @return Computed color as vec3.
          */
-        vec3 trace_ray(const ray& r, const scene& scene, const size_t depth);
+        vec3 trace_ray(const ray &r, const scene &scene, const size_t depth);
     };
 }

@@ -19,6 +19,23 @@ namespace cobra
         virtual ~material() = default;
 
         /**
+         * @brief Returns the emitted color from the material at a point.
+         *
+         * Most materials do not emit light, so the default implementation
+         * returns black (no emission). Materials that do emit light (like
+         * `diffuse_light`) should override this method.
+         *
+         * @param u Texture coordinate u.
+         * @param v Texture coordinate v.
+         * @param p World-space point of emission.
+         * @return The emitted color, which is black by default.
+         */
+        virtual vec3 emitted(double u, double v, const vec3 &p) const
+        {
+            return vec3(0, 0, 0);
+        }
+
+        /**
          * @brief Computes how an incoming ray scatters upon hitting a surface.
          *
          * This method will be overridden by derived material types (e.g., Lambertian, Metal, Dielectric).
@@ -30,6 +47,9 @@ namespace cobra
          * @return True if the ray is scattered, false otherwise.
          */
         virtual bool scatter(
-            const ray &r_in, const hit_record &rec, vec3 &attenuation, ray &scattered) const = 0;
+            const ray &r_in, const hit_record &rec, vec3 &attenuation, ray &scattered) const
+        {
+            return false;
+        };
     };
 }
