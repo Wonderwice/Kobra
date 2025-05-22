@@ -5,9 +5,11 @@
 #include "image/ppm_writer.h"
 #include "geometry/sphere.h"
 #include <memory>
+#include <chrono>
 #include "core/lambertian.h"
 #include "core/metal.h"
 #include "core/dieletric.h"
+#include "core/bvh_node.h"
 
 using namespace cobra;
 
@@ -64,12 +66,14 @@ void fill_with_spheres(scene &world)
 
 int main()
 {
+    auto start = std::chrono::high_resolution_clock::now();
+
     camera cam;
 
     cam.aspect_ratio = 16.0 / 9.0;
     cam.width = 800;
-    cam.nb_samples = 30;
-    cam.depth = 15;
+    cam.nb_samples = 250;
+    cam.depth = 30;
 
     cam.vfov = 20;
     cam.lookfrom = vec3(13, 2, 3);
@@ -79,13 +83,20 @@ int main()
     cam.defocus_angle = 0.6;
     cam.focus_dist = 10.0;
 
-    scene _scene = scene();
-    fill_with_spheres(_scene);
+    scene world = scene();
+    fill_with_spheres(world);
 
-    const image img = cam.render_image(_scene);
+    world = scene(make_shared<bvh_node>(world));
+
+    const image img = cam.render_image(world);
     ppm_writer img_writer;
 
     img_writer.write(img, "../output.ppm");
+
+    auto end = std::chrono::high_resolution_clock::now();
+    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
+
+    std::cout << "Render time: " << duration.count() << " ms" << std::endl;
 
     return 0;
 }
