@@ -14,18 +14,18 @@ namespace cobra
     class quad : public hittable
     {
     private:
-        vec3 Q;                     ///< Origin point of the quad
-        vec3 u, v;                  ///< Edge vectors defining the parallelogram
-        vec3 w;                     ///< Helper vector for coordinate projection
-        vec3 normal;               ///< Normal vector of the quad's plane
-        double D;                  ///< Dot product of normal and point Q (for plane equation)
-        shared_ptr<material> mat;  ///< Material assigned to the quad
-        aabb bbox;                 ///< Axis-aligned bounding box for the quad
+        vec3 Q;                   ///< Origin point of the quad
+        vec3 u, v;                ///< Edge vectors defining the parallelogram
+        vec3 w;                   ///< Helper vector for coordinate projection
+        vec3 normal;              ///< Normal vector of the quad's plane
+        double D;                 ///< Dot product of normal and point Q (for plane equation)
+        shared_ptr<material> mat; ///< Material assigned to the quad
+        aabb bbox;                ///< Axis-aligned bounding box for the quad
 
     public:
         /**
          * @brief Constructs a quad given an origin, two edge vectors, and a material.
-         * 
+         *
          * The quad lies on the plane formed by `Q`, `Q + u`, and `Q + v`.
          *
          * @param Q The origin point of the quad.
@@ -115,6 +115,27 @@ namespace cobra
         {
             interval unit_interval = interval(0, 1);
             return unit_interval.contains(a) && unit_interval.contains(b);
+        }
+    };
+
+    class cube : public scene
+    {
+    public:
+        cube(const vec3 &a, const vec3 &b, shared_ptr<material> mat)
+        {
+            auto min = vec3(std::fmin(a.x(), b.x()), std::fmin(a.y(), b.y()), std::fmin(a.z(), b.z()));
+            auto max = vec3(std::fmax(a.x(), b.x()), std::fmax(a.y(), b.y()), std::fmax(a.z(), b.z()));
+
+            auto dx = vec3(max.x() - min.x(), 0, 0);
+            auto dy = vec3(0, max.y() - min.y(), 0);
+            auto dz = vec3(0, 0, max.z() - min.z());
+
+            add_hittable(make_shared<quad>(vec3(min.x(), min.y(), max.z()), dx, dy, mat));  // front
+            add_hittable(make_shared<quad>(vec3(max.x(), min.y(), max.z()), -dz, dy, mat)); // right
+            add_hittable(make_shared<quad>(vec3(max.x(), min.y(), min.z()), -dx, dy, mat)); // back
+            add_hittable(make_shared<quad>(vec3(min.x(), min.y(), min.z()), dz, dy, mat));  // left
+            add_hittable(make_shared<quad>(vec3(min.x(), max.y(), max.z()), dx, -dz, mat)); // top
+            add_hittable(make_shared<quad>(vec3(min.x(), min.y(), min.z()), dx, dz, mat));  // bottom
         }
     };
 } // namespace cobra
