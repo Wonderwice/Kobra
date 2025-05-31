@@ -18,6 +18,9 @@ namespace cobra
         const vec3 _center;             ///< The center position of the sphere.
         const double _radius;           ///< The radius of the sphere.
         aabb bbox;                      ///< Bounding of the sphere
+        
+        static vec3 random_to_sphere(double radius, double distance_squared);
+
     public:
         /**
          * @brief Constructs a sphere with given center, radius, and color.
@@ -44,7 +47,7 @@ namespace cobra
          */
         double radius() { return _radius; }
 
-         /**
+        /**
          * @brief Determines if a ray hits the object within the given range.
          *
          * This function checks if the ray intersects the object between the
@@ -73,5 +76,10 @@ namespace cobra
          * @return An AABB representing the bounding volume of the object.
          */
         aabb bounding_box() const override { return bbox; }
+
+        double pdf_value(const vec3 &origin, const vec3 &direction) const override;
+        
+
+        vec3 random(const vec3 &origin) const override;
     };
 }

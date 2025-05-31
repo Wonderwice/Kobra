@@ -18,7 +18,7 @@ namespace cobra
     public:
         std::vector<std::shared_ptr<hittable>> hittable_list; ///< List of pointers to hittable objects in the scene.
         aabb bbox;
-        
+
         /// Default constructor
         scene();
 
@@ -32,7 +32,7 @@ namespace cobra
          * @param object Pointer to the hittable object to add.
          */
         void add_hittable(std::shared_ptr<hittable> object);
-        
+
         /**
          * @brief Determines if a ray hits the object within the given range.
          *
@@ -79,5 +79,22 @@ namespace cobra
          * @return An AABB representing the bounding volume of the object.
          */
         aabb bounding_box() const override { return bbox; }
+
+        double pdf_value(const vec3 &origin, const vec3 &direction) const override
+        {
+            auto weight = 1.0 / hittable_list.size();
+            auto sum = 0.0;
+
+            for (const auto &object : hittable_list)
+                sum += weight * object->pdf_value(origin, direction);
+
+            return sum;
+        }
+
+        vec3 random(const vec3 &origin) const override
+        {
+            auto int_size = int(hittable_list.size());
+            return hittable_list[random_int(0, int_size - 1)]->random(origin);
+        }
     };
 } // namespace cobra
