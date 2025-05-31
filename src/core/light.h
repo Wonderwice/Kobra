@@ -39,8 +39,10 @@ namespace cobra
          * @param p World-space point of emission.
          * @return The emitted color at the point.
          */
-        vec3 emitted(double u, double v, const vec3 &p) const override
+        vec3 emitted(const ray &r_in, const hit_record &rec, double u, double v, const vec3 &p) const override
         {
+            if (!rec.front_face)
+                return vec3(0, 0, 0);
             return tex->value(u, v, p);
         }
 

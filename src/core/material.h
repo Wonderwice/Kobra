@@ -25,12 +25,14 @@ namespace cobra
          * returns black (no emission). Materials that do emit light (like
          * `diffuse_light`) should override this method.
          *
+         * @param r_in The incoming ray that hit the surface.
+         * @param rec A hit record containing details of the intersection.
          * @param u Texture coordinate u.
          * @param v Texture coordinate v.
          * @param p World-space point of emission.
          * @return The emitted color, which is black by default.
          */
-        virtual vec3 emitted(double u, double v, const vec3 &p) const
+        virtual vec3 emitted(const ray &r_in, const hit_record &rec, double u, double v, const vec3 &p) const
         {
             return vec3(0, 0, 0);
         }
@@ -48,7 +50,7 @@ namespace cobra
          * @return True if the ray is scattered, false otherwise.
          */
         virtual bool scatter(
-            const ray &r_in, const hit_record &rec, vec3 &attenuation, ray &scattered, double& pdf) const
+            const ray &r_in, const hit_record &rec, vec3 &attenuation, ray &scattered, double &pdf) const
         {
             return false;
         };
