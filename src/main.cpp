@@ -212,7 +212,7 @@ const image cornell_box()
 
     cam.aspect_ratio = 1.0;
     cam.width = 600;
-    cam.nb_samples = 200;
+    cam.nb_samples = 10;
     cam.depth = 50;
     cam.background = vec3(0, 0, 0);
 

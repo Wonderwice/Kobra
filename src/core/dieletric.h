@@ -10,7 +10,7 @@ namespace cobra
     public:
         dielectric(double refraction_index) : refraction_index(refraction_index) {}
 
-        bool scatter(const ray &r_in, const hit_record &rec, vec3 &attenuation, ray &scattered)
+        bool scatter(const ray &r_in, const hit_record &rec, vec3 &attenuation, ray &scattered,double& pdf)
             const override
         {
             attenuation = vec3(1.0, 1.0, 1.0);

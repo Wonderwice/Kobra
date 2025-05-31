@@ -258,4 +258,20 @@ namespace cobra
     else
       return -on_unit_sphere;
   }
+  /**
+   * @brief Generates a random unit vector with cosine-weighted distribution around the z-axis.
+   * @return A 3D unit vector sampled with cosine-weighted distribution around the z-axis.
+   */
+  inline vec3 random_cosine_direction()
+  {
+    auto r1 = random_double();
+    auto r2 = random_double();
+
+    auto phi = 2 * pi * r1;
+    auto x = std::cos(phi) * std::sqrt(r2);
+    auto y = std::sin(phi) * std::sqrt(r2);
+    auto z = std::sqrt(1 - r2);
+
+    return vec3(x, y, z);
+  }
 }

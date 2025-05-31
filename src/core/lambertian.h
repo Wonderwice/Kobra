@@ -5,6 +5,7 @@
 #include "core/hit_record.h"
 #include "core/texture.h"
 #include <memory>
+#include "core/onb.h"
 
 namespace cobra
 {
@@ -35,17 +36,26 @@ namespace cobra
          * @param rec The hit record containing intersection details.
          * @param attenuation The color attenuation (set to the albedo).
          * @param scattered The scattered ray from the surface.
+         * @param pdf The value of the pdf, for importance sampling.
          * @return true Always returns true for Lambertian surfaces.
          */
-        bool scatter(const ray &r_in, const hit_record &rec, vec3 &attenuation, ray &scattered)
+        bool scatter(const ray &r_in, const hit_record &rec, vec3 &attenuation, ray &scattered, double& pdf)
             const override
         {
-            auto scatter_direction = rec.normal + random_unit_vector();
-            if (scatter_direction.near_zero())
-                scatter_direction = rec.normal;
-            scattered = ray(rec.point, scatter_direction);
+            onb unw(rec.normal);
+            auto scatter_direction = unw.transform(random_cosine_direction());
+            
+            scattered = ray(rec.point, unit_vector(scatter_direction));
             attenuation = tex->value(rec.u, rec.v, rec.point);
+            pdf = dot(unw.w(), scattered.get_direction()) / pi;
             return true;
+        }
+
+        double scattering_pdf(const ray &r_in, const hit_record &rec, const ray &scattered)
+            const override
+        {
+            auto cos_theta = dot(rec.normal, unit_vector(scattered.get_direction()));
+            return cos_theta < 0 ? 0 : cos_theta / pi;
         }
     };
 }

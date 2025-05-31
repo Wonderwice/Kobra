@@ -32,9 +32,10 @@ namespace cobra
          * @param rec The hit record containing the intersection details.
          * @param attenuation The attenuation color, equal to the albedo.
          * @param scattered The resulting scattered ray.
+         * @param pdf The value of the pdf, for importance sampling.
          * @return true if the scattered ray is reflected in the correct direction (i.e., not inside the object).
          */
-        bool scatter(const ray &r_in, const hit_record &rec, vec3 &attenuation, ray &scattered) const override
+        bool scatter(const ray &r_in, const hit_record &rec, vec3 &attenuation, ray &scattered, double& pdf) const override
         {
             vec3 reflected = reflect(r_in.get_direction(), rec.normal);
             reflected = unit_vector(reflected) + (fuzz * random_unit_vector());
