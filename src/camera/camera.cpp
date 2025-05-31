@@ -5,6 +5,9 @@
 #include "core/hit_record.h"
 #include "scene/scene.h"
 #include "core/material.h"
+#include "core/pdf.h"
+#include "scene/scene.h"
+
 namespace cobra
 {
     // ----------------------------
@@ -90,7 +93,7 @@ namespace cobra
         return camera_center + (p[0] * defocus_disk_u) + (p[1] * defocus_disk_v);
     }
 
-    image camera::render_image(const scene &world)
+    image camera::render_image(const hittable &world, const hittable &lights)
     {
         init();
         image img_result(width, height);
@@ -106,7 +109,7 @@ namespace cobra
                 {
                     for (int s_i = 0; s_i < sqrt_spp; s_i++)
                     {
-                        vec3 color_contrib = trace_ray(generate_ray(i, j, s_i, s_j), world, depth);
+                        vec3 color_contrib = trace_ray(generate_ray(i, j, s_i, s_j), world, lights, depth);
                         final_color += color_contrib;
                     }
                 }
@@ -117,7 +120,7 @@ namespace cobra
         return img_result;
     }
 
-    vec3 camera::trace_ray(const ray &r, const scene &world, const size_t depth)
+    vec3 camera::trace_ray(const ray &r, const hittable &world, const hittable &lights, size_t depth)
     {
         if (depth <= 0)
             return vec3(0, 0, 0);
@@ -128,33 +131,25 @@ namespace cobra
 
         if (hit_anything)
         {
-            ray scattered;
-            vec3 attenuation;
-            double pdf_value;
+            scatter_record srec;
             vec3 emission = closest_hit.mat->emitted(r, closest_hit, closest_hit.u, closest_hit.v, closest_hit.point);
 
-            if (!closest_hit.mat->scatter(r, closest_hit, attenuation, scattered, pdf_value))
+            if (!closest_hit.mat->scatter(r, closest_hit, srec))
                 return emission;
+            if (srec.skip_pdf)
+            {
+                return srec.attenuation * trace_ray(srec.skip_pdf_ray, world, lights, depth - 1);
+            }
 
-            auto on_light = vec3(random_double(213, 343), 554, random_double(227, 332));
-            auto to_light = on_light - closest_hit.point;
-            auto distance_squared = to_light.length_squared();
-            to_light = unit_vector(to_light);
+            auto light_ptr = make_shared<hittable_pdf>(lights, closest_hit.point);
+            mixture_pdf p(light_ptr, srec.pdf_ptr);
 
-            if (dot(to_light, closest_hit.normal) < 0)
-                return emission;
-
-            double light_area = (343 - 213) * (332 - 227);
-            auto light_cosine = std::fabs(to_light.y());
-            if (light_cosine < 0.000001)
-                return emission;
-
-            pdf_value = distance_squared / (light_cosine * light_area);
-            scattered = ray(closest_hit.point, to_light);
+            ray scattered = ray(closest_hit.point, p.generate());
+            auto pdf_value = p.value(scattered.get_direction());
 
             double scattering_pdf = closest_hit.mat->scattering_pdf(r, closest_hit, scattered);
 
-            return emission + (attenuation * scattering_pdf * trace_ray(scattered, world, depth - 1)) / pdf_value;
+            return emission + (srec.attenuation * scattering_pdf * trace_ray(scattered, world, lights, depth - 1)) / pdf_value;
         }
 
         return background;

@@ -47,65 +47,65 @@ namespace cobra
         vec3 defocus_disk_sample() const;
 
         /**
-        * @brief Returns the vector to a random point in the square sub-pixel
-        * @param s_i Grid index i
-        * @param s_j Grid index j
-        */
+         * @brief Returns the vector to a random point in the square sub-pixel
+         * @param s_i Grid index i
+         * @param s_j Grid index j
+         */
         vec3 sample_square_stratified(int s_i, int s_j) const;
 
-        public:
-            size_t width = 400;       ///< Image width in pixels
-            size_t height;            ///< Image height in pixels
-            double aspect_ratio = 1.; ///< Aspect ratio.
-            size_t nb_samples = 10;   ///< Number of samples for anti-aliasing.
-            size_t depth = 10;        ///< Number of rebound for a primary ray.
+    public:
+        size_t width = 400;       ///< Image width in pixels
+        size_t height;            ///< Image height in pixels
+        double aspect_ratio = 1.; ///< Aspect ratio.
+        size_t nb_samples = 10;   ///< Number of samples for anti-aliasing.
+        size_t depth = 10;        ///< Number of rebound for a primary ray.
 
-            double vfov = 90;              ///< Vertical view angle (field of view)
-            vec3 lookfrom = vec3(0, 0, 0); ///< Point camera is looking from
-            vec3 lookat = vec3(0, 0, -1);  ///< Point camera is looking at
-            vec3 vup = vec3(0, 1, 0);      ///< Camera-relative "up" direction
-            double defocus_angle = 0;      ///< Variation angle of rays through each pixel
-            double focus_dist = 10;        ///< Distance from camera lookfrom point to plane of perfect focus
-            vec3 background;               ///< Scene background color
+        double vfov = 90;              ///< Vertical view angle (field of view)
+        vec3 lookfrom = vec3(0, 0, 0); ///< Point camera is looking from
+        vec3 lookat = vec3(0, 0, -1);  ///< Point camera is looking at
+        vec3 vup = vec3(0, 1, 0);      ///< Camera-relative "up" direction
+        double defocus_angle = 0;      ///< Variation angle of rays through each pixel
+        double focus_dist = 10;        ///< Distance from camera lookfrom point to plane of perfect focus
+        vec3 background;               ///< Scene background color
 
-            /**
-             * @brief Constructs a camera.
-             */
-            camera();
+        /**
+         * @brief Constructs a camera.
+         */
+        camera();
 
-            /// Default destructor.
-            ~camera();
+        /// Default destructor.
+        ~camera();
 
-            /// @brief Initialize the empty params.
-            void init();
+        /// @brief Initialize the empty params.
+        void init();
 
-            /// @brief Get image width in pixels.
-            size_t image_width() const { return width; }
+        /// @brief Get image width in pixels.
+        size_t image_width() const { return width; }
 
-            /// @brief Get image height in pixels.
-            size_t image_height() const { return height; }
+        /// @brief Get image height in pixels.
+        size_t image_height() const { return height; }
 
-            /**
-             * @brief Generate a ray from the camera passing through the viewport at coordinates (u,v).
-             * @param u Horizontal coordinate normalized between 0 and 1.
-             * @param v Vertical coordinate normalized between 0 and 1.
-             * @return Ray originating at camera center through pixel (u,v).
-             */
-            const ray generate_ray(int i, int j, int s_i, int s_j) const;
+        /**
+         * @brief Generate a ray from the camera passing through the viewport at coordinates (u,v).
+         * @param u Horizontal coordinate normalized between 0 and 1.
+         * @param v Vertical coordinate normalized between 0 and 1.
+         * @return Ray originating at camera center through pixel (u,v).
+         */
+        const ray generate_ray(int i, int j, int s_i, int s_j) const;
 
-            /**
-             * @brief Render the scene and produce the image.
-             * @return Rendered image.
-             */
-            image render_image(const scene &world);
+        /**
+         * @brief Render the scene and produce the image.
+         * @return Rendered image.
+         */
+        image render_image(const hittable &world, const hittable &lights);
 
-            /**
-             * @brief Trace a ray through the scene to compute its color.
-             * @param r Ray to trace.
-             * @param scene Scene to trace in.
-             * @param depth Current recursion depth.
-             * @return Computed color as vec3.
-             */
-            vec3 trace_ray(const ray &r, const scene &scene, const size_t depth);
-        };
-    }
+        /**
+         * @brief Trace a ray through the scene to compute its color.
+         * @param r Ray to trace.
+         * @param scene Scene to trace in.
+         * @param depth Current recursion depth.
+         * @return Computed color as vec3.
+         */
+        vec3 trace_ray(const ray &r, const hittable &world, const hittable &lights, size_t depth);
+    };
+}

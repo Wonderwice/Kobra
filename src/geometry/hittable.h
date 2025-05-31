@@ -50,6 +50,16 @@ namespace cobra
          * @return An AABB representing the bounding volume of the object.
          */
         virtual aabb bounding_box() const = 0;
+        
+        virtual double pdf_value(const vec3 &origin, const vec3 &direction) const
+        {
+            return 0.0;
+        }
+
+        virtual vec3 random(const vec3 &origin) const
+        {
+            return vec3(1, 0, 0);
+        }
     };
 
     inline hittable::~hittable() {}

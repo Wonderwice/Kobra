@@ -21,6 +21,7 @@ namespace cobra
         double D;                 ///< Dot product of normal and point Q (for plane equation)
         shared_ptr<material> mat; ///< Material assigned to the quad
         aabb bbox;                ///< Axis-aligned bounding box for the quad
+        double area;              ///< Area of the quad, useful for pdf calculations
 
     public:
         /**
@@ -46,6 +47,7 @@ namespace cobra
             normal = unit_vector(n);
             D = dot(normal, Q);
             w = n / dot(n, n); // Used to compute (alpha, beta) barycentric-like coords
+            area = n.length();
         }
 
         /**
@@ -115,6 +117,24 @@ namespace cobra
         {
             interval unit_interval = interval(0, 1);
             return unit_interval.contains(a) && unit_interval.contains(b);
+        }
+        
+        double pdf_value(const vec3 &origin, const vec3 &direction) const override
+        {
+            hit_record rec;
+            if (!this->hit(ray(origin, direction), interval(0.001, infinity), rec))
+                return 0;
+
+            auto distance_squared = rec.t * rec.t * direction.length_squared();
+            auto cosine = std::fabs(dot(direction, rec.normal) / direction.length());
+
+            return distance_squared / (cosine * area);
+        }
+
+        vec3 random(const vec3 &origin) const override
+        {
+            auto p = Q + (random_double() * u) + (random_double() * v);
+            return p - origin;
         }
     };
 

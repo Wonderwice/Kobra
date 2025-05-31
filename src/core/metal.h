@@ -35,13 +35,16 @@ namespace cobra
          * @param pdf The value of the pdf, for importance sampling.
          * @return true if the scattered ray is reflected in the correct direction (i.e., not inside the object).
          */
-        bool scatter(const ray &r_in, const hit_record &rec, vec3 &attenuation, ray &scattered, double& pdf) const override
+        bool scatter(const ray &r_in, const hit_record &rec, scatter_record &srec) const override
         {
             vec3 reflected = reflect(r_in.get_direction(), rec.normal);
-            reflected = unit_vector(reflected) + (fuzz * random_unit_vector());
-            scattered = ray(rec.point, reflected);
-            attenuation = albedo;
-            return (dot(scattered.get_direction(), rec.normal) > 0);
+
+            srec.attenuation = albedo;
+            srec.pdf_ptr = nullptr;
+            srec.skip_pdf = true;
+            srec.skip_pdf_ray = ray(rec.point, reflected);
+
+            return true;
         }
     };
 }

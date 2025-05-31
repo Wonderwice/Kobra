@@ -1,9 +1,21 @@
 #pragma once
 #include "core/ray.h"
 #include "core/hit_record.h"
+#include "core/pdf.h"
 
 namespace cobra
+
 {
+
+    class scatter_record
+    {
+    public:
+        vec3 attenuation;
+        shared_ptr<pdf> pdf_ptr;
+        bool skip_pdf;
+        ray skip_pdf_ray;
+    };
+
     /**
      * @class material
      * @brief Abstract base class representing a material in a ray tracing context.
@@ -49,11 +61,10 @@ namespace cobra
          * @param pdf The value of the pdf, for importance sampling.
          * @return True if the ray is scattered, false otherwise.
          */
-        virtual bool scatter(
-            const ray &r_in, const hit_record &rec, vec3 &attenuation, ray &scattered, double &pdf) const
+        virtual bool scatter(const ray &r_in, const hit_record &rec, scatter_record &srec) const
         {
             return false;
-        };
+        }
 
         virtual double scattering_pdf(const ray &r_in, const hit_record &rec, const ray &scattered)
             const

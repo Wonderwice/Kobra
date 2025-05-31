@@ -10,10 +10,11 @@ namespace cobra
     public:
         dielectric(double refraction_index) : refraction_index(refraction_index) {}
 
-        bool scatter(const ray &r_in, const hit_record &rec, vec3 &attenuation, ray &scattered,double& pdf)
-            const override
+        bool scatter(const ray &r_in, const hit_record &rec, scatter_record &srec) const override
         {
-            attenuation = vec3(1.0, 1.0, 1.0);
+            srec.attenuation = vec3(1.0, 1.0, 1.0);
+            srec.pdf_ptr = nullptr;
+            srec.skip_pdf = true;      
             double ri = rec.front_face ? (1.0 / refraction_index) : refraction_index;
 
             vec3 unit_direction = unit_vector(r_in.get_direction());
@@ -28,7 +29,7 @@ namespace cobra
             else
                 direction = refract(unit_direction, rec.normal, ri);
 
-            scattered = ray(rec.point, direction);
+            srec.skip_pdf_ray = ray(rec.point, direction);
             return true;
         }
 

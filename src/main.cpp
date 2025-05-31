@@ -37,7 +37,7 @@ const image quads()
 
     cam.aspect_ratio = 1.0;
     cam.width = 400;
-    cam.nb_samples = 100;
+    cam.nb_samples = 1000;
     cam.depth = 50;
 
     cam.vfov = 80;
@@ -48,7 +48,7 @@ const image quads()
     cam.defocus_angle = 0;
     cam.background = vec3(0.70, 0.80, 1.00);
 
-    return cam.render_image(world);
+    return cam.render_image(world, world);
 }
 
 const image fill_with_spheres()
@@ -120,7 +120,7 @@ const image fill_with_spheres()
     world.add_hittable(std::make_shared<sphere>(vec3(4, 1, 0), 1.0, material3));
 
     world = scene(make_shared<bvh_node>(world));
-    return cam.render_image(world);
+    return cam.render_image(world, world);
 }
 
 const image checkered_spheres()
@@ -147,7 +147,7 @@ const image checkered_spheres()
 
     cam.defocus_angle = 0;
 
-    return cam.render_image(world);
+    return cam.render_image(world, world);
 }
 
 const image simple_light()
@@ -178,7 +178,7 @@ const image simple_light()
 
     cam.defocus_angle = 0;
 
-    return cam.render_image(world);
+    return cam.render_image(world, world);
 }
 
 const image cornell_box()
@@ -197,22 +197,26 @@ const image cornell_box()
     world.add_hittable(make_shared<quad>(vec3(555, 555, 555), vec3(-555, 0, 0), vec3(0, 0, -555), white));
     world.add_hittable(make_shared<quad>(vec3(0, 0, 555), vec3(555, 0, 0), vec3(0, 555, 0), white));
 
-    shared_ptr<hittable> box1 = make_shared<cube>(vec3(0,0,0), vec3(165,330,165), white);
+    shared_ptr<material> aluminum = make_shared<metal>(vec3(0.8, 0.85, 0.88), 0.0);
+    shared_ptr<hittable> box1 = make_shared<cube>(vec3(0, 0, 0), vec3(165, 330, 165), aluminum);
     box1 = make_shared<rotate_y>(box1, 15);
-    box1 = make_shared<translate>(box1, vec3(265,0,295));
+    box1 = make_shared<translate>(box1, vec3(265, 0, 295));
     world.add_hittable(box1);
 
-    shared_ptr<hittable> box2 = make_shared<cube>(vec3(0,0,0), vec3(165,165,165), white);
+    shared_ptr<hittable> box2 = make_shared<cube>(vec3(0, 0, 0), vec3(165, 165, 165), white);
     box2 = make_shared<rotate_y>(box2, -18);
-    box2 = make_shared<translate>(box2, vec3(130,0,65));
+    box2 = make_shared<translate>(box2, vec3(130, 0, 65));
     world.add_hittable(box2);
 
+    // Light Sources
+    auto empty_material = shared_ptr<material>();
+    quad lights(vec3(343, 554, 332), vec3(-130, 0, 0), vec3(0, 0, -105), empty_material);
 
     camera cam;
 
     cam.aspect_ratio = 1.0;
     cam.width = 600;
-    cam.nb_samples = 10;
+    cam.nb_samples = 100;
     cam.depth = 20;
     cam.background = vec3(0, 0, 0);
 
@@ -223,7 +227,7 @@ const image cornell_box()
 
     cam.defocus_angle = 0;
 
-    return cam.render_image(world);
+    return cam.render_image(world, lights);
 }
 
 int main()

@@ -39,15 +39,12 @@ namespace cobra
          * @param pdf The value of the pdf, for importance sampling.
          * @return true Always returns true for Lambertian surfaces.
          */
-        bool scatter(const ray &r_in, const hit_record &rec, vec3 &attenuation, ray &scattered, double& pdf)
-            const override
+        virtual bool scatter(const ray &r_in, const hit_record &rec, scatter_record &srec)
+        const override
         {
-            onb unw(rec.normal);
-            auto scatter_direction = unw.transform(random_cosine_direction());
-            
-            scattered = ray(rec.point, unit_vector(scatter_direction));
-            attenuation = tex->value(rec.u, rec.v, rec.point);
-            pdf = dot(unw.w(), scattered.get_direction()) / pi;
+            srec.attenuation = tex->value(rec.u,rec.v,rec.point);
+            srec.pdf_ptr = make_shared<cosine_pdf>(rec.normal);
+            srec.skip_pdf = false;
             return true;
         }
 
